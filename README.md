@@ -19,6 +19,11 @@ Here is what is built in the SaaS:
 - Private Email Service (SMTP via NameCheap)
 - Auth via Email/Password, Google, Github, Discord
 
+## 🎯 Who is this for??
+- Entrepreneurs launching a SaaS startup 🚀
+- Developers who want a production-ready SaaS template 🏗️
+- Indie Hackers looking for a quick MVP solution 💡
+
 ## Overview
 Cloud Context is a modern web application that helps developers understand and manage their codebase. The template is the core code for the SaaS portion of Cloud Context. 
 
@@ -141,6 +146,11 @@ This structure organizes the application into logical modules:
 
 ## Contributing
 Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
+
+## 💖 Support This Project
+If you find this project useful, consider supporting my work:
+- ⭐ [Sponsor Me on GitHub](https://github.com/sponsors/mathewlewallen)
+- ☕ [Buy Me a Coffee](https://buymeacoffee.com/mathewlewallen)
 
 ## License
 

@@ -1,5 +1,5 @@
 import type { GenerateCheckoutSession, GetCustomerPortalUrl } from 'wasp/server/operations';
-import { PaymentPlanId, paymentPlans } from '../payment/plans';
+import { PaymentPlanId, paymentPlans } from './plans';
 import { paymentProcessor } from './paymentProcessor';
 import { HttpError } from 'wasp/server';
 

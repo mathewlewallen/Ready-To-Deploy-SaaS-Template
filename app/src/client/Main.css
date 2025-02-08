@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .chat-height {
+    height: calc(100vh - 8.125rem);
+  }
+
+  @media (min-width: 1024px) {
+    .chat-height {
+      height: calc(100vh - 5.625rem);
+    }
+  }
+
+  /* Ensure Tailwind generates necessary styles */
+  .force-tailwind {
+    @apply bg-boxdark border-boxdark text-bodydark border-primary;
+  }
+}
+
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/Satoshi-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.tableCheckbox:checked ~ div span {
+  @apply bg-boxdark text-white border-primary;
+}
+
+.tableCheckbox:checked ~ div {
+  @apply bg-boxdark text-white border-primary;
+}
+
+.apexcharts-legend-text {
+  @apply text-bodydark;
+}
+
+.apexcharts-text {
+  @apply fill-bodydark;
+}
+
+.apexcharts-xcrosshairs {
+  @apply fill-boxdark;
+}
+
+.apexcharts-gridline {
+  @apply border-graydark;
+}
+
+.apexcharts-tooltip.apexcharts-theme-light {
+  @apply bg-boxdark border-boxdark;
+}
+
+.apexcharts-tooltip-title {
+  @apply bg-graydark border-boxdark;
+}
+
+.apexcharts-xaxistooltip,
+.apexcharts-yaxistooltip {
+  @apply bg-graydark border-graydark text-bodydark;
+}
+
+.apexcharts-xaxistooltip-bottom:after {
+  @apply border-b-graydark;
+}
+
+.flatpickr-day.selected {
+  @apply bg-primary border-primary hover:bg-primary hover:border-primary;
+}
+
+.flatpickr-calendar {
+  @apply bg-boxdark text-bodydark shadow-medium p-6 2xsm:w-auto;
+}
+
+.flatpickr-day {
+  @apply text-bodydark;
+}
+
+.map-btn .jvm-zoom-btn {
+  @apply flex items-center justify-center w-7.5 h-7.5 rounded border border-boxdark hover:border-primary hover:bg-primary hover:text-white text-bodydark text-2xl leading-none px-0 pt-0 pb-0.5;
+}
+
+.mapOne .jvm-zoom-btn {
+  @apply left-auto top-auto bottom-0;
+}
+
+.mapOne .jvm-zoom-btn.jvm-zoomin {
+  @apply right-10;
+}
+
+.mapTwo .jvm-zoom-btn {
+  @apply top-auto bottom-0;
+}
+
+.mapTwo .jvm-zoom-btn.jvm-zoomin {
+  @apply left-0;
+}
+
+.taskCheckbox:checked ~ .box {
+  @apply bg-boxdark text-white border-primary;
+}
+
+.taskCheckbox:checked ~ p {
+  @apply bg-boxdark text-white border-primary;
+}
+
+
+.custom-input-date::-webkit-calendar-picker-indicator {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+}
+
+.custom-input-date-1::-webkit-calendar-picker-indicator {
+  background-image: url(./images/icon/icon-calendar.svg);
+}
+
+.custom-input-date-2::-webkit-calendar-picker-indicator {
+  background-image: url(./images/icon/icon-arrow-down.svg);
+}
+
+[x-cloak] {
+  display: none !important;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

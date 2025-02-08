@@ -1,0 +1,348 @@
+app cloudcontext { 
+  wasp: {
+    version: "^0.16.0"
+  },
+
+  title: "Cloud Context",
+
+  head: [
+    "<meta charset='utf-8' />",
+    "<meta name='description' content='Simplifying context management for your projects' />",
+    "<meta name='author' content='CloudContext' />",
+    "<meta name='keywords' content='solution, product, app, service, cloud, context management, productivity, SaaS, software' />",//TODO: CHANGE
+    
+    "<meta property='og:type' content='website' />",
+    "<meta property='og:title' content='Cloud Context' />",
+    "<meta property='og:site_name' content='Cloud Context' />",
+    "<meta property='og:url' content='https://cloudcontext.cc' />",
+    "<meta property='og:description' content='Simplifying context management for your projects' />",
+    "<meta property='og:image' content='https://cloudcontext.cc/public-banner.webp' />",
+    "<meta name='twitter:image' content='https://cloudcontext.cc/public-banner.webp' />",
+    "<meta name='twitter:image:width' content='800' />",
+    "<meta name='twitter:image:height' content='400' />",
+    "<meta name='twitter:card' content='summary_large_image' />",
+    "<script defer data-domain='cloudcontext.cc' src='https://plausible.io/js/script.js'></script>",  // for production 
+    //"<script defer data-domain='cloudcontext.cc' src='https://plausible.io/js/script.local.js'></script>",  // for development 
+  ],
+
+  auth: {
+    userEntity: User,
+    methods: {
+      email: {
+        fromField: {
+          name: "Cloud Context", 
+          email: "mathewlewallen@cloudcontext.cc" 
+        },
+        emailVerification: {
+          clientRoute: EmailVerificationRoute,
+          getEmailContentFn: import { getVerificationEmailContent } from "@src/auth/email-and-pass/emails",
+        },
+        passwordReset: {
+          clientRoute: PasswordResetRoute,
+          getEmailContentFn: import { getPasswordResetEmailContent } from "@src/auth/email-and-pass/emails",
+        },
+        userSignupFields: import { getEmailUserFields } from "@src/auth/userSignupFields",
+      },
+      google: {
+        userSignupFields: import { getGoogleUserFields } from "@src/auth/userSignupFields",
+        configFn: import { getGoogleAuthConfig } from "@src/auth/userSignupFields",
+      },
+      gitHub: {
+        userSignupFields: import { getGitHubUserFields } from "@src/auth/userSignupFields",
+        configFn: import { getGitHubAuthConfig } from "@src/auth/userSignupFields",
+      },
+      discord: {
+        userSignupFields: import { getDiscordUserFields } from "@src/auth/userSignupFields",
+        configFn: import { getDiscordAuthConfig } from "@src/auth/userSignupFields"
+      }
+    },
+    onAfterSignup: import { onAfterSignup } from "@src/auth/hooks",
+    onAuthFailedRedirectTo: "/login",
+    onAuthSucceededRedirectTo: "/pricing",
+  },
+
+  server: {
+    middlewareConfigFn: import { serverMiddlewareFn } from "@src/server/middleware"
+    },
+
+  db: {
+    // Run `wasp db seed` to seed the database with the seed functions below:
+    seeds: [
+      // Populates the database with a bunch of fake users to work with during development.
+      import { seedMockUsers } from "@src/server/scripts/dbSeeds",
+    ]
+  },
+
+  client: {
+    rootComponent: import App from "@src/client/App",
+  },
+
+  emailSender: {
+    provider: SMTP,
+    defaultFrom: {
+      name: "CloudContext", //TODO: CHANGE
+      email: "mathewlewallen@cloudcontext.cc" //TODO: CHANGE
+    },
+  },
+}
+
+route LandingPageRoute { path: "/", to: LandingPage }
+page LandingPage {
+  component: import LandingPage from "@src/landing-page/LandingPage"
+}
+
+route FAQPageRoute { path: "/faq", to: FAQPage }
+page FAQPage {
+  component: import FAQPage from "@src/faq/FAQPage"
+}
+
+//#region Auth Pages
+route LoginRoute { path: "/login", to: LoginPage }
+page LoginPage {
+  component: import Login from "@src/auth/LoginPage"
+}
+
+route SignupRoute { path: "/signup", to: SignupPage }
+page SignupPage {
+  component: import { Signup } from "@src/auth/SignupPage"
+}
+
+route RequestPasswordResetRoute { path: "/forgotpassword", to: RequestPasswordResetPage }
+page RequestPasswordResetPage {
+  component: import { RequestPasswordResetPage } from "@src/auth/email-and-pass/RequestPasswordResetPage",
+}
+
+route PasswordResetRoute { path: "/passwordreset", to: PasswordResetPage }
+page PasswordResetPage {
+  component: import { PasswordResetPage } from "@src/auth/email-and-pass/PasswordResetPage",
+}
+
+route EmailVerificationRoute { path: "/emailverification", to: EmailVerificationPage }
+page EmailVerificationPage {
+  component: import { EmailVerificationPage } from "@src/auth/email-and-pass/EmailVerificationPage",
+}
+//#endregion
+
+//#region User
+route AccountRoute { path: "/account", to: AccountPage }
+page AccountPage {
+  authRequired: true,
+  component: import Account from "@src/user/AccountPage"
+}
+
+query getPaginatedUsers {
+  fn: import { getPaginatedUsers } from "@src/user/operations",
+  entities: [User]
+}
+
+query getCurrentUser {
+  fn: import { getCurrentUser } from "@src/user/operations",
+  entities: [User]
+}
+
+action updateCurrentUser {
+  fn: import { updateCurrentUser } from "@src/user/operations",
+  entities: [User]
+}
+
+action updateUserById {
+  fn: import { updateUserById } from "@src/user/operations",
+  entities: [User]
+}
+//#endregion
+
+//#region Payment
+route PricingPageRoute { path: "/pricing", to: PricingPage }
+page PricingPage {
+  component: import PricingPage from "@src/payment/PricingPage"
+}
+
+route CheckoutRoute { path: "/checkout", to: CheckoutPage }
+page CheckoutPage {
+  authRequired: true,
+  component: import Checkout from "@src/payment/CheckoutPage"
+}
+
+query getCustomerPortalUrl {
+  fn: import { getCustomerPortalUrl } from  "@src/payment/operations",
+  entities: [User]
+}
+
+action generateCheckoutSession {
+  fn: import { generateCheckoutSession } from "@src/payment/operations",
+  entities: [User]
+}
+
+api paymentsWebhook {
+  fn: import { paymentsWebhook } from "@src/payment/webhook",
+  entities: [User],
+  middlewareConfigFn: import { paymentsMiddlewareConfigFn } from "@src/payment/webhook",
+  httpRoute: (POST, "/payments-webhook")
+}
+//#endregion
+
+//#region File Upload
+route FileUploadRoute { path: "/fileupload", to: FileUploadPage }
+page FileUploadPage {
+  authRequired: true,
+  component: import FileUpload from "@src/file-upload/FileUploadPage"
+}
+
+action createFile {
+  fn: import { createFile } from "@src/file-upload/operations",
+  entities: [User, File]
+}
+
+query getAllFilesByUser {
+  fn: import { getAllFilesByUser } from "@src/file-upload/operations",
+  entities: [User, File]
+}
+
+query getDownloadFileSignedURL {
+  fn: import { getDownloadFileSignedURL } from "@src/file-upload/operations",
+  entities: [User, File]
+}
+//#endregion
+
+//#region Analytics
+query getDailyStats {
+  fn: import { getDailyStats } from "@src/analytics/operations",
+  entities: [User, DailyStats]
+}
+
+job dailyStatsJob {
+  executor: PgBoss,
+  perform: {
+    fn: import { calculateDailyStats } from "@src/analytics/stats"
+  },
+  schedule: {
+    cron: "0 * * * *" // every hour. useful in production
+    // cron: "* * * * *" // every minute. useful for debugging
+  },
+  entities: [User, DailyStats, Logs, PageViewSource]
+}
+//#endregion
+
+//#region Admin Dashboard
+route AdminRoute { path: "/admin", to: AnalyticsDashboardPage }
+page AnalyticsDashboardPage {
+  authRequired: true,
+  component: import AnalyticsDashboardPage from "@src/admin/dashboards/analytics/AnalyticsDashboardPage"
+}
+
+route AdminUsersRoute { path: "/admin/users", to: AdminUsersPage }
+page AdminUsersPage {
+  authRequired: true,
+  component: import AdminUsers from "@src/admin/dashboards/users/UsersDashboardPage"
+}
+
+route AdminSettingsRoute { path: "/admin/settings", to: AdminSettingsPage }
+page AdminSettingsPage {
+  authRequired: true,
+  component: import AdminSettings from "@src/admin/elements/settings/SettingsPage"
+}
+
+route AdminChartsRoute { path: "/admin/chart", to: AdminChartsPage }
+page AdminChartsPage {
+  authRequired: true,
+  component: import AdminCharts from "@src/admin/elements/charts/ChartsPage"
+}
+
+route AdminFormElementsRoute { path: "/admin/forms/form-elements", to: AdminFormElementsPage }
+page AdminFormElementsPage {
+  authRequired: true,
+  component: import AdminForms from "@src/admin/elements/forms/FormElementsPage"
+}
+
+route AdminFormLayoutsRoute { path: "/admin/forms/form-layouts", to: AdminFormLayoutsPage }
+page AdminFormLayoutsPage {
+  authRequired: true,
+  component: import AdminForms from "@src/admin/elements/forms/FormLayoutsPage"
+}
+
+route AdminCalendarRoute { path: "/admin/calendar", to: AdminCalendarPage }
+page AdminCalendarPage {
+  authRequired: true,
+  component: import AdminCalendar from "@src/admin/elements/calendar/CalendarPage"
+}
+
+route AdminUIAlertsRoute { path: "/admin/ui/alerts", to: AdminUIAlertsPage }
+page AdminUIAlertsPage {
+  authRequired: true,
+  component: import AdminUI from "@src/admin/elements/ui-elements/AlertsPage"
+}
+
+route AdminUIButtonsRoute { path: "/admin/ui/buttons", to: AdminUIButtonsPage }
+page AdminUIButtonsPage {
+  authRequired: true,
+  component: import AdminUI from "@src/admin/elements/ui-elements/ButtonsPage"
+}
+
+route NotFoundRoute { path: "*", to: NotFoundPage }
+page NotFoundPage {
+  component: import { NotFoundPage } from "@src/client/components/NotFoundPage"
+}
+//#endregion
+
+//#region Contact Form Messages
+route AdminMessagesRoute { path: "/admin/messages", to: AdminMessagesPage }
+page AdminMessagesPage {
+  authRequired: true,
+  component: import AdminMessages from "@src/messages/MessagesPage"
+}
+
+route ContactPageRoute { path: "/contact", to: ContactPage }
+page ContactPage {
+  component: import { ContactPage } from "@src/client/ContactPage"
+}
+
+query getMessages {
+  fn: import { getMessages } from "@src/messages/operations",
+  entities: [ContactFormMessage]
+}
+
+action createMessage {
+  fn: import { createMessage } from "@src/messages/operations",
+  entities: [ContactFormMessage]
+}
+
+action updateMessageStatus {
+  fn: import { updateMessageStatus } from "@src/messages/operations",
+  entities: [ContactFormMessage]
+}
+//#endregion
+ 
+//#region Legal
+route PrivacyPageRoute { path: "/privacy", to: PrivacyPage }
+page PrivacyPage {
+  component: import PrivacyPage from "@src/legal/PrivacyPolicyPage"
+}
+
+route TOSPageRoute { path: "/tos", to: TOSPage }
+page TOSPage {
+  component: import TOSPage from "@src/legal/TermsOfServicePage"
+}
+
+route RefundPageRoute { path: "/refund", to: RefundPage }
+page RefundPage {
+  component: import RefundPage from "@src/legal/RefundPage"
+}
+
+route DocsPageRoute { path: "/docs", to: DocsPage }
+page DocsPage {
+  component: import DocsPage from "@src/legal/DocumentationPage"
+}
+//#endregion
+
+//#region Newsletter
+job sendNewsletter {
+  executor: PgBoss,
+  perform: {
+    fn: import { checkAndQueueNewsletterEmails } from "@src/newsletter/sendNewsletter"
+  },
+  schedule: {
+    cron: "0 7 * * 1" // at 7:00 am every Monday
+  },
+  entities: [User]
+}
+//#endregion

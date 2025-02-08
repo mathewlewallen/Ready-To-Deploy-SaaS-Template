@@ -1,0 +1,78 @@
+// Wasp Import Rules
+- Path to Wasp functions within .ts files must come from 'wasp', not '@wasp'!
+  ✓ import { User } from 'wasp/entities'
+  ✓ import type { GetDailyStats } from 'wasp/server/operations'
+  ✓ import { getDailyStats, useQuery } from 'wasp/client/operations'
+  ✗ import { getDailyStats, useQuery } from '@wasp/...' 
+  ✗ import { getDailyStats, useQuery } from '@src/analytics/operations.ts'
+
+- Path to external imports within 'main.wasp' must start with "@src/"!
+  ✓ component: import { AnalyticsDashboardPage } from "@src/admin/dashboards/analytics/AnalyticsDashboardPage.tsx"
+  ✗ component: import { AnalyticsDashboardPage } from "@admin/dashboards/analytics/AnalyticsDashboardPage.tsx"
+
+// Project Structure
+- Keep analytics-related code in /src/analytics/
+- Keep payment-related code in /src/payment/
+- Keep admin dashboard components in /src/admin/dashboards/
+- Keep admin UI elements in /src/admin/elements/
+- Keep shared types and utilities in /src/shared/
+- Keep email templates in /src/email/
+
+// Environment Variables
+- Never commit .env files
+- Use .env.example as a template
+- Create separate .env.server and .env.client files
+- All client-side env variables must be prefixed with REACT_APP_
+
+// Database & Prisma
+- Add database models to 'schema.prisma', NOT to 'main.wasp'
+- Keep the 'schema.prisma' in the root directory
+- Run 'wasp db migrate-dev' after schema changes
+- Add proper relations between User, Subscription, and Analytics models
+
+// Authentication
+- Use Wasp's built-in auth components
+  ✓ import { LoginForm } from 'wasp/client/auth'
+- Implement proper admin-only route protection using useRedirectHomeUnlessUserIsAdmin
+- Configure social auth providers in .env files
+
+// Analytics
+- Use Plausible for analytics tracking
+- Keep analytics queries in /src/analytics/operations.ts
+- Implement proper error handling for analytics data
+
+// Styling
+- Use Tailwind CSS for styling
+- Follow the dark theme color scheme:
+  - bg-boxdark for dark backgrounds
+  - text-white for light text
+  - border-boxdark for borders
+- Use the provided UI components from /src/admin/elements/
+
+// State Management
+- Use Wasp's useQuery and useMutation hooks for data fetching
+- Use React's useState and useEffect for local state
+- Use usePersistedState for persistent local storage state
+
+// Error Handling
+- Implement proper error boundaries
+- Use toast notifications for user feedback
+- Log errors appropriately
+
+// Code Style
+- Use TypeScript for all new code
+- Use single quotes for strings
+- Use proper TypeScript types from 'wasp/entities' and 'wasp/operations'
+- Follow the existing component structure in admin dashboards
+
+// Testing
+- Write tests for critical business logic
+- Test analytics tracking functionality
+- Test payment processing flows
+- Test admin-only access controls
+
+// Documentation
+- Document all environment variables in .env.example
+- Add comments for complex business logic
+- Document analytics tracking events
+- Document admin dashboard features

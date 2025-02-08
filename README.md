@@ -20,7 +20,7 @@ Here is what is built in the SaaS:
 - Auth via Email/Password, Google, Github, Discord
 
 ## Overview
-Cloud Context is a modern web application that helps developers understand and manage their cloud infrastructure. 
+Cloud Context is a modern web application that helps developers understand and manage their codebase. The template is the core code for the SaaS portion of Cloud Context. 
 
 ## Features
 - 🔐 Authentication & Authorization

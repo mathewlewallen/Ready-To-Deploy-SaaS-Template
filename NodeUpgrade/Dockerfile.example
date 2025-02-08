@@ -1,0 +1,44 @@
+# ⚡ Use Node.js 22.13.1 (Alpine for small size)
+FROM node:22.13.1-alpine AS node
+
+# 📌 Base Image with security patches
+FROM node AS base
+RUN apk --no-cache -U upgrade
+
+# 📦 Builder stage (compiles server code, installs dependencies)
+FROM base AS server-builder
+RUN apk add --no-cache autoconf automake build-base libtool openssl python3
+WORKDIR /app
+COPY src ./src
+COPY package.json .
+COPY package-lock.json .
+COPY server .wasp/build/server
+COPY sdk .wasp/out/sdk
+# Install npm packages, resulting in node_modules/.
+RUN npm install --only=production && cd .wasp/build/server && npm install
+COPY db/schema.prisma .wasp/build/db/
+WORKDIR /app/.wasp/build/server
+RUN npx prisma generate --schema='../db/schema.prisma'
+RUN npm run bundle
+
+# 🏗 Production Image (minimal and secure)
+FROM base AS server-production
+
+# 🔒 Install only what's needed (pm2 removed)
+RUN apk add --no-cache autoconf automake build-base libtool openssl python3
+ENV NODE_ENV=production
+WORKDIR /app
+
+COPY --from=server-builder /app/node_modules ./node_modules
+COPY --from=server-builder /app/.wasp/out/sdk .wasp/out/sdk
+COPY --from=server-builder /app/.wasp/build/server/node_modules .wasp/build/server/node_modules
+COPY --from=server-builder /app/.wasp/build/server/bundle .wasp/build/server/bundle
+COPY --from=server-builder /app/.wasp/build/server/package*.json .wasp/build/server/
+COPY db/ .wasp/build/db/
+
+# 📡 Expose port (default to 8080)
+EXPOSE 8080
+
+# 🔥 Start production server
+WORKDIR /app/.wasp/build/server
+ENTRYPOINT ["npm", "run", "start-production"]

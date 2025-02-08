@@ -2,6 +2,23 @@
 
 Built with [Wasp](https://wasp-lang.dev), based on the [Open Saas](https://opensaas.sh) template.
 
+This is being shared to help you have a working product that is fully built and functional to start building your own SaaS with. Wasp is a great framework and Open Saas is a great template and they have a thriving community on [Discord](https://discord.gg/xSybmwAT) and [Github](https://github.com/wasp-lang).
+
+Here is what is built in the SaaS:
+- Wasp v0.16.0
+- React
+- Node.js
+- TailwindCSS
+- Prisma
+- PostgreSQL
+- Lemonsqueezy
+- AWS S3
+- Plausible
+- NameCheap
+- Railway
+- Private Email Service (SMTP via NameCheap)
+- Auth via Email/Password, Google, Github, Discord
+
 ## Overview
 Cloud Context is a modern web application that helps developers understand and manage their cloud infrastructure. 
 
@@ -41,7 +58,9 @@ Cloud Context is a modern web application that helps developers understand and m
 - NameCheap Account (for domain features)
 - Railway Account (for hosting features)
 - Private Email Service Account (for email features)
-- 
+- Github Account (for social auth features)
+- Discord Account (for social auth features)
+- Google Account (for social auth features)
 
 ### Environment Setup
 1. Clone the repository

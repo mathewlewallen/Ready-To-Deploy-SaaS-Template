@@ -1,4 +1,4 @@
-# Cloud Context
+# Cloud Context SaaS Template
 
 Built with [Wasp](https://wasp-lang.dev), based on the [Open Saas](https://opensaas.sh) template.
 

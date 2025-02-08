@@ -143,5 +143,9 @@ This structure organizes the application into logical modules:
 Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+
+This project is licensed under the MIT License.
+
+It is based on [OpenSaaS.sh](https://github.com/wasp-lang/OpenSaaS) by Wasp, which is also licensed under the MIT License. All modifications and additions are © 2025 cloudcontext.
+
 
